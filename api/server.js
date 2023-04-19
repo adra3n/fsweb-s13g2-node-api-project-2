@@ -3,9 +3,10 @@
 // posts router'ını buraya require edin ve bağlayın
 
 const express = require('express')
+const server = express()
 
-const Posts = require('./posts/posts-model')
-const postsRouter = require('./posts/posts-router')
+const posts = require('./posts/posts-model')
+const postRouter = require('./posts/posts-router')
 server.use(express.json())
 
 module.exports = server

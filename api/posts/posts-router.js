@@ -5,43 +5,53 @@ const router = express.Router()
 
 const postModel = require('./posts-model')
 
-router.get('/', async (req, res) => {
+router.get('/api/posts/', async (req, res) => {
   try {
     const posts = await postModel.find()
     res.json(posts)
   } catch (error) {
-    res.status(500).json()
+    res.status(500).json({ message: 'Gönderiler alınamadı' })
   }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/api/posts/:id', async (req, res) => {
   try {
+    const post = await postModel.findById(req.params.id)
     if (!post) {
-      res.status(404).json()
+      res.status(404).json({ message: "Belirtilen ID'li gönderi bulunamadı" })
     } else {
       res.json(post)
     }
   } catch (error) {
-    res.status(500).json()
+    res.status(500).json({ message: 'Gönderi bilgisi alınamadı' })
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/api/posts/', async (req, res) => {
   try {
     const { title, contents } = req.body
     if (!title || !contents) {
-      res.status(400).json({ message: '' })
+      res
+        .status(400)
+        .json({ message: 'Lütfen gönderi için bir title ve contents sağlayın' })
     } else {
       const insertedId = await postModel.insert({
         title: title,
         contents: contents,
       })
-      const insertedPost = await postModel.findById(insertedID)
+      const insertedPost = await postModel.findById(insertedId)
       res.status(201).json(insertedPost)
     }
   } catch (error) {
-    res.status(500).json()
+    res
+      .status(500)
+      .json({ message: 'Veritabanına kaydedilirken bir hata oluştu' })
   }
 })
+
+// router.put('/api/posts/:id', async (req, res) => {
+//   try {
+//   } catch (error) {}
+// })
 
 module.exports = router
