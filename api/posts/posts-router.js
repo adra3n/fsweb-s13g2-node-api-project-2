@@ -87,5 +87,18 @@ router.delete('/api/posts/:id', async (req, res) => {
     res.status(500).json({ message: 'Gönderi silinemedi' })
   }
 })
+router.delete('/api/posts/:id', async (req, res) => {
+  try {
+    const post = await postModel.findById(req.params.id)
+    if (!post) {
+      res.status(404).json({ message: 'Belirtilen ID li gönderi bulunamadı' })
+    } else {
+      const postComments = await postModel.findPostComments(req.params.id)
+      res.json(postComments)
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Yorumlar bilgisi getirilemedi' })
+  }
+})
 
 module.exports = router
