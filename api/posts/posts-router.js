@@ -49,9 +49,43 @@ router.post('/api/posts/', async (req, res) => {
   }
 })
 
-// router.put('/api/posts/:id', async (req, res) => {
-//   try {
-//   } catch (error) {}
-// })
+router.put('/api/posts/:id', async (req, res) => {
+  try {
+    const post = await postModel.findById(req.params.id)
+    if (!post) {
+      res.status(404).json({ message: "Belirtilen ID'li gönderi bulunamadı" })
+    } else {
+      const { title, contents } = req.body
+      if (!title || !contents) {
+        res.status(400).json({
+          message: 'Lütfen gönderi için bir title ve contents sağlayın',
+        })
+      } else {
+        await postModel.update(req.params.id, {
+          title: title,
+          contents: contents,
+        })
+        const updatedPost = await postModel.findById(req.params.id)
+        res.json(updatedPost)
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Gönderi bilgileri güncellenemedi' })
+  }
+})
+
+router.delete('/api/posts/:id', async (req, res) => {
+  try {
+    const post = await postModel.findById(req.params.id)
+    if (!post) {
+      res.status(404).json({ message: 'Belirtilen ID li gönderi bulunamadı' })
+    } else {
+      await postModel.remove(req.params.id)
+      res.json(post)
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Gönderi silinemedi' })
+  }
+})
 
 module.exports = router
