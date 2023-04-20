@@ -8,5 +8,6 @@ const server = express()
 const posts = require('./posts/posts-model')
 const postRouter = require('./posts/posts-router')
 server.use(express.json())
+server.use(cors())
 
 module.exports = server
